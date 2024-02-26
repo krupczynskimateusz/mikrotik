@@ -1,2 +1,3 @@
 # Mikrotik
-Mikrotik staff.
+Mikrotik configurations and other things.
+Feel free to use.
