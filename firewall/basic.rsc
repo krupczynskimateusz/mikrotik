@@ -159,7 +159,7 @@ add action=accept chain=output comment="accept capsman" connection-state="" dst-
 add action=accept chain=output comment="accept capsman" connection-state="" dst-port=5247 out-interface-list=LAN protocol=udp disabled=yes
 add action=accept chain=output comment="accept new icmp" connection-state=new protocol=icmp
 add action=accept chain=output comment="accept dhcp" disabled=yes dst-port=68 out-interface-list=LAN protocol=udp
-add action=log chain=output comment="log befor drop" log-prefix=ipv4_output_drop1
+add action=log chain=output comment="log befor drop" log-prefix=ipv4_output_drop
 add action=drop chain=output comment="drop else"
 
 add action=passthrough chain=local_forward comment="==========LOCAL==========" 
@@ -186,7 +186,7 @@ add action=jump chain=prerouting comment="jump to lan" in-interface-list=LAN jum
 add action=passthrough chain=prerouting comment="==========Else=========="
 add action=accept chain=prerouting comment="wan -> accept else" in-interface-list=WAN
 add action=accept chain=prerouting comment="lan -> accept else" in-interface-list=LAN
-add action=log chain=prerouting comment="log befor drop"
+add action=log chain=prerouting comment="log befor drop" log-prefix="raw6_else_drop" 
 add action=drop chain=prerouting comment="drop else"
 
 add action=passthrough chain=wan comment="==========WAN==========" 
@@ -246,7 +246,7 @@ add address=xxxx:xxxx:xxxx:xxxx::x/56 list=my_prefix
 
 /ipv6 firewall filter
 add action=passthrough chain=forward comment="==========FORWARD=========="
-add action=log chain=forward comment="drop befor log" connection-state=invalid log-prefix=ipv6+_forward_drop_invalid
+add action=log chain=forward comment="drop befor log" connection-state=invalid log-prefix=ipv6_forward_drop_invalid
 add action=drop chain=forward comment="drop invalid" connection-state=invalid
 add action=accept chain=forward comment="accept establish" connection-state=established
 add action=accept chain=forward comment="accept related" connection-state=related
@@ -267,7 +267,7 @@ add action=accept chain=input comment="accept new dot - not supported" connectio
 add action=accept chain=input comment="accept icmpv6" protocol=icmpv6
 add action=accept chain=input comment="accept dhcpv6 - internet" connection-state=new dst-port=546 in-interface-list=WAN protocol=udp src-port=547
 add action=accept chain=input comment="accept dhcpv6 - lan" connection-state=new dst-port=547 in-interface-list=LAN protocol=udp src-port=546
-add action=log chain=input comment="log befor drop" log-prefix=ipv6_drop
+add action=log chain=input comment="log befor drop" log-prefix=ipv6_input_drop
 add action=drop chain=input comment="drop else"
 
 add action=passthrough chain=output comment="==========OUTPUT=========="
@@ -281,7 +281,7 @@ add action=accept chain=output comment="accept new dns - internet" connection-st
 add action=accept chain=output comment="accept new dot - internet" connection-state=new dst-address-list=dns dst-port=853 out-interface-list=WAN protocol=tcp
 add action=accept chain=output comment="accept new dns - internet" connection-state=new dst-address-list=dns dst-port=53 out-interface-list=WAN protocol=udp
 add action=accept chain=output comment="accept new dot - internet" connection-state=new dst-address-list=dns dst-port=853 out-interface-list=WAN protocol=udp
-add action=log chain=output comment="log befor drop" log-prefix=ipv6_drop
+add action=log chain=output comment="log befor drop" log-prefix=ipv6_output_drop
 add action=drop chain=output comment="drop else"
 
 ## Firewall RAW
@@ -297,7 +297,7 @@ add action=jump chain=prerouting comment="jump to icmpv6 filter" jump-target=icm
 add action=passthrough chain=prerouting comment="=========ELSE========="
 add action=accept chain=prerouting comment="wan -> accept else" in-interface-list=WAN
 add action=accept chain=prerouting comment="lan -> accept else" in-interface-list=LAN
-add action=log chain=prerouting comment="log befor drop" log-prefix=raw6_drop
+add action=log chain=prerouting comment="log befor drop" log-prefix=raw6_else_drop
 add action=drop chain=prerouting comment="drop else"
 
 # Bogon filter
@@ -319,7 +319,7 @@ add action=drop chain=prefix comment="drop else"
 
 # IPv6 filter
 add action=passthrough chain=prerouting comment="=========ICMPv6=========" protocol=icmpv6
-add action=log chain=icmpv6 comment="log befor drop hop limit" dst-address=fe80::/10 hop-limit=not-equal:255 log-prefix=raw6_icmpv6_hop_limit protocol=icmpv6
+add action=log chain=icmpv6 comment="log befor drop hop limit" dst-address=fe80::/10 hop-limit=not-equal:255 log-prefix=raw6_icmpv6_drop_hop_limit protocol=icmpv6
 add action=drop chain=icmpv6 comment="drop with hop-limit!=255" dst-address=fe80::/10 hop-limit=not-equal:255 protocol=icmpv6
 add action=accept chain=icmpv6 comment="dst unreachable" icmp-options=1:0-8 protocol=icmpv6
 add action=accept chain=icmpv6 comment="packet too big" icmp-options=2:0 protocol=icmpv6
