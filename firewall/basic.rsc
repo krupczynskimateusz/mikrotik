@@ -118,17 +118,19 @@ add address=10.0.x.z list=iot_devices
 
 /ip firewall filter
 add action=passthrough chain=forward comment="==========FORWARD=========="
+add action=log chain=forward comment="log befor drop" connection-state=invalid log-prefix=ipv4_forward_drop_invalid
+add action=drop chain=forward comment="drop invalid" connection-state=invalid
 add action=drop chain=forward comment="drop iot" src-address-list=iot_devices
 add action=accept chain=forward comment="accept established" connection-state=established
 add action=accept chain=forward comment="accept related" connection-state=related
 add action=accept chain=forward comment="accept new to internet" connection-state=new out-interface-list=WAN
-add action=log chain=forward comment="log befor drop" connection-state=invalid log-prefix=ipv4_forward_drop_invalid
-add action=drop chain=forward comment="drop invalid" connection-state=invalid
 add action=jump chain=forward comment="jump forward for lan" jump-target=local_forward
 add action=log chain=forward comment="log befor drop" log-prefix=ipv4_forward_drop
 add action=drop chain=forward comment="drop else"
 
 add action=passthrough chain=input comment="==========INPUT=========="
+add action=log chain=input comment="log befor drop" connection-state=invalid log-prefix=ipv4_input_drop_invalid
+add action=drop chain=input comment="drop invalid" connection-state=invalid
 add action=accept chain=input comment="accept established" connection-state=established
 add action=accept chain=input comment="aacept related" connection-state=related
 add action=accept chain=input comment="accept ssh" connection-state=new dst-address=10.0.y.1 dst-port=22 in-interface-list=LAN protocol=tcp src-address-list=my_device
@@ -244,6 +246,8 @@ add address=xxxx:xxxx:xxxx:xxxx::x/56 list=my_prefix
 
 /ipv6 firewall filter
 add action=passthrough chain=forward comment="==========FORWARD=========="
+add action=log chain=forward comment="drop befor log" connection-state=invalid log-prefix=ipv6+_forward_drop_invalid
+add action=drop chain=forward comment="drop invalid" connection-state=invalid
 add action=accept chain=forward comment="accept establish" connection-state=established
 add action=accept chain=forward comment="accept related" connection-state=related
 add action=accept chain=forward comment="accept new to internet" connection-state=new out-interface-list=WAN src-address-list=my_prefix
@@ -251,6 +255,8 @@ add action=log chain=forward comment="drop befor log" log-prefix=ipv6_forward_dr
 add action=drop chain=forward comment="accept new to internet" 
 
 add action=passthrough chain=input comment="==========INPUT=========="
+add action=log chain=input comment="drop befor log" connection-state=invalid log-prefix=ipv6_input_drop_invalid
+add action=drop chain=input comment="drop invalid" connection-state=invalid
 add action=accept chain=input comment="accept established" connection-state=established
 add action=accept chain=input comment="accept related" connection-state=related
 add action=accept chain=input comment="accept new dns" connection-state=new dst-port=53 in-interface-list=LAN protocol=tcp
@@ -261,8 +267,6 @@ add action=accept chain=input comment="accept new dot - not supported" connectio
 add action=accept chain=input comment="accept icmpv6" protocol=icmpv6
 add action=accept chain=input comment="accept dhcpv6 - internet" connection-state=new dst-port=546 in-interface-list=WAN protocol=udp src-port=547
 add action=accept chain=input comment="accept dhcpv6 - lan" connection-state=new dst-port=547 in-interface-list=LAN protocol=udp src-port=546
-add action=log chain=input comment="drop befor log" connection-state=invalid log-prefix=ipv6_invalid_drop
-add action=drop chain=input comment="drop invalid" connection-state=invalid
 add action=log chain=input comment="log befor drop" log-prefix=ipv6_drop
 add action=drop chain=input comment="drop else"
 
