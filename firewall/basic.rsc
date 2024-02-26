@@ -13,11 +13,10 @@ add comment=WAN name=WAN
 add interface=v100-LAN list=LAN
 add interface=v200-WLAN list=LAN
 add interface=v997-MGMNT list=LAN
-add interface=v1000-VM-DHCP list=LAN
 add interface=wlan1 list=LAN
 add interface=wlan2 list=LAN
 add interface=bridge_local list=LAN
-add comment=Plus interface=ether1 list=WAN
+add interface=ether1 list=WAN
 
 ## Services
 ###########
